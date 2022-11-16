@@ -23,7 +23,7 @@ struct DelayFunctionCall {
 };
 
 constexpr char const name__  [] = "ipc-kvs";
-shm_chan_t shared_chan { name__, ipc::receiver };
+shm_chan_t shared_chan { name__, ipc::receiver };//这是接收者
 
 map<uint8_t, shm_chan_t*> executor_chans_map;
 std::atomic<bool> is_quit__{ false };
@@ -266,18 +266,19 @@ void run(CommHelperInterface *helper, Address ip, unsigned thread_id, unsigned e
   map<uint8_t, uint8_t> executor_status_map;
   for (uint8_t e_id = 0; e_id < executor; e_id++){
     // 0: empty, 1: available, 2: await, 3: busy, 4: error
-    executor_status_map[e_id] = 2;
+    executor_status_map[e_id] = 2;//等待
     
-    string chan_name = "ipc-" + std::to_string(e_id);
-    shm_chan_t * executor_chan_ = new shm_chan_t{chan_name.c_str(), ipc::sender};
+    string chan_name = "ipc-" + std::to_string(e_id);//这个很重要
+    shm_chan_t * executor_chan_ = new shm_chan_t{chan_name.c_str(), ipc::sender};//using shm_chan_t = ipc::chan<ipc::relat::multi, ipc::relat::multi, ipc::trans::unicast>;
+    //我得研究下这个ipc::chan的用法,看文档得知，在这里ipc::sender是表示这个executor_chan_是发送者
     executor_chans_map[e_id] = executor_chan_;
 
     if(!executor_chans_map[e_id]->reconnect(ipc::sender)){
-      std::cerr << "Reconnect executor chan " << e_id << " failed" << std::endl;
+      std::cerr << "Reconnect executor chan " << e_id << " failed" << std::endl;//TODO 这个ipc::sender是啥，为什么reconnect
     }
   }
   
-  map<Bucket, vector<TriggerPointer>> bucket_triggers_map;
+  map<Bucket, vector<TriggerPointer>> bucket_triggers_map; //using TriggerPointer = std::shared_ptr<Trigger>, Trigger是个class
 
   std::cout << "Running kvs server...\n";
   log->info("Running kvs server");
@@ -287,33 +288,35 @@ void run(CommHelperInterface *helper, Address ip, unsigned thread_id, unsigned e
 
   while (true){
     // TODO timeout
-    auto dd = shared_chan.recv(0);
-    auto str = static_cast<char*>(dd.data());
+    auto dd = shared_chan.recv(0);//TODO: 这个收到了什么shared_chan是接收者
+    auto str = static_cast<char*>(dd.data());//转为数据 
 
     if (str != nullptr) {
       auto recv_stamp = std::chrono::system_clock::now();
 
       // executor address (1 byte) | requst type (1 byte) | request id (1 byte) | metadata len (1 byte)| metadata | optional value
+      //解码操作
       auto executor_address = str[0];
       uint8_t executor_id = static_cast<uint8_t>(executor_address - 1);
 
 
       // get request
       if (str[1] == 1){
-        bool from_ephe_store = static_cast<uint8_t>(str[2]) == 1;
-        auto req_id = static_cast<uint8_t>(str[3]);
-        auto meta_data_len = static_cast<uint8_t>(str[4]);
+        bool from_ephe_store = static_cast<uint8_t>(str[2]) == 1;//来自那里
+        auto req_id = static_cast<uint8_t>(str[3]);//请求id
+        auto meta_data_len = static_cast<uint8_t>(str[4]); //元数据长度
 
-        string key_name(str + 5, meta_data_len);
+        string key_name(str + 5, meta_data_len);//key的id
 
-        if(from_ephe_store){
+        if(from_ephe_store){//来自内存
+        //key_len_map的类型:map<string, unsigned> key_len_map;
           if (key_len_map.find(key_name) != key_len_map.end()) {
             string resp;
             // msg type | request id (1 byte) | is_success (1 byte) | optional value
             // 3 means generic response
-            resp.push_back(3);
-            resp.push_back(req_id);
-            auto size_len = key_len_map[key_name];
+            resp.push_back(3);//信息类型是3，
+            resp.push_back(req_id);//请求id
+            auto size_len = key_len_map[key_name];//得到这个key_name的长度，是什么长度？ value还是key
 
             resp.push_back(1);
             resp += std::to_string(size_len);
@@ -324,7 +327,7 @@ void run(CommHelperInterface *helper, Address ip, unsigned thread_id, unsigned e
 
             log->info("Get local {}, recv: {}, ready: {}", key_name, recv_time, ready_time);
 
-            send_to_executer(executor_chans_map[executor_id], resp);
+            send_to_executer(executor_chans_map[executor_id], resp);//TODO:这个要好好研究下
           }
           else {
             // std::cout << key_name << " not exists\n";
@@ -391,6 +394,7 @@ void run(CommHelperInterface *helper, Address ip, unsigned thread_id, unsigned e
                 
                 auto avail_executors = get_avail_executor_num(executor_status_map);
                 if (target_funcs.size() > avail_executors){
+                  //要运行的函数数量> executors的数量，则调用forward_call_via_helper函数，让global scheduler将一些函数发到远程机器上
                   vector<string> local_funcs(target_funcs.begin(), target_funcs.begin() + avail_executors);
                   vector<string> remote_funcs(target_funcs.begin() + avail_executors, target_funcs.end());
                   for (auto &func : local_funcs) schedule_func_call(log, helper, executor_status_map, function_executor_map, session_id, app_name, func, func_args, arg_flag);
@@ -694,7 +698,7 @@ int main(int argc, char *argv[]) {
     unsigned IOThreadCount = conf["threads"]["io"].as<unsigned>();
 
     funcDir = conf["func_dir"].as<string>();
-    schedDelayTime = conf["delay"].as<unsigned>();
+    schedDelayTime = conf["delay"].as<unsigned>(); //延迟的时间
     sharedExecutor = conf["shared"].as<unsigned>() == 1;
     rejectExtraReq = conf["forward_or_reject"].as<unsigned>() == 1;
 
@@ -704,9 +708,9 @@ int main(int argc, char *argv[]) {
     unsigned executor_num = user["executor"].as<unsigned>();
 
     vector<Address> coord_ips;
-    YAML::Node coord = user["coord"];
+    YAML::Node coord = user["coord"];//看来是个地址
     for (const YAML::Node &node : coord) {
-      coord_ips.push_back(node.as<Address>());
+      coord_ips.push_back(node.as<Address>());//这里干什么应
     }
 
     if (coord_ips.size() <= 0) {
@@ -723,13 +727,13 @@ int main(int argc, char *argv[]) {
 
     vector<Address> kvs_routing_ips;
     if (YAML::Node elb = user["routing-elb"]) {
-      kvs_routing_ips.push_back(elb.as<Address>());
+      kvs_routing_ips.push_back(elb.as<Address>());//这是干什么用
     }
 
     vector<UserRoutingThread> kvs_routing_threads;
     for (Address addr : kvs_routing_ips) {
       for (unsigned i = 0; i < 4; i++) {
-        kvs_routing_threads.push_back(UserRoutingThread(addr, i));
+        kvs_routing_threads.push_back(UserRoutingThread(addr, i));//这是干什么用
       }
     }
     
@@ -746,7 +750,7 @@ int main(int argc, char *argv[]) {
       resp_queues.push_back(resp_queue);
       kvs_clients.push_back(new KvsClient(kvs_routing_threads, ip, thread_id, 30000));
 
-      io_threads.push_back(std::thread(&CommHelper::run_io_thread_loop, &helper, ip, thread_id));
+      io_threads.push_back(std::thread(&CommHelper::run_io_thread_loop, &helper, ip, thread_id));//CommHelper::run_io_thread_loop很重要
     }
 
     std::cout << "Done Configuration" << std::endl;

@@ -58,7 +58,7 @@ class Trigger {
     int get_trigger_option() {return trigger_option_;}
 };
 
-using TriggerPointer = std::shared_ptr<Trigger>;
+
 
 class ImmediateTrigger : public Trigger {
   public:
