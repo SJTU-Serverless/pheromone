@@ -105,6 +105,56 @@ void run(Address public_ip, Address private_ip, unsigned thread_id) {
   zmq::socket_t forward_func_socket(context, ZMQ_PULL);
   forward_func_socket.bind(ht.forward_func_bind_address());
   std::cout << "forward func socket binded" << std::endl;
+  /*
+  这些可以值得学习
+  zmq::socket_t notify_handler_puller(context, ZMQ_PULL);
+  notify_handler_puller.bind(ht.notify_handler_bind_address());
+  std::cout << "Notifying handler binded" << std::endl;
+
+  zmq::socket_t query_handler_puller(context, ZMQ_PULL);
+  query_handler_puller.bind(ht.key_query_handler_bind_address());
+  std::cout << "Querying handler binded" << std::endl;
+
+  zmq::socket_t bucket_op_handler_puller(context, ZMQ_PULL);
+  bucket_op_handler_puller.bind(ot.bucket_op_bind_address());
+  std::cout << "Bucket operation handler binded" << std::endl;
+
+  zmq::socket_t trigger_op_handler_puller(context, ZMQ_PULL);
+  trigger_op_handler_puller.bind(ot.trigger_op_bind_address());
+  std::cout << "Trigger operation handler binded" << std::endl;
+
+  zmq::socket_t update_handler_puller(context, ZMQ_PULL);
+  update_handler_puller.bind(ht.update_handler_bind_address());
+  std::cout << "Update status handler binded" << std::endl;
+
+  // socket for global scheduler
+  zmq::socket_t func_create_socket(context, ZMQ_REP);
+  func_create_socket.bind(ot.func_create_bind_address());
+  std::cout << "func create socket binded" << std::endl;
+
+  zmq::socket_t app_regist_socket(context, ZMQ_PULL);
+  app_regist_socket.bind(ot.app_regist_bind_address());
+  std::cout << "app regist socket binded" << std::endl;
+
+  zmq::socket_t func_call_socket(context, ZMQ_PULL);
+  func_call_socket.bind(ot.func_call_bind_address());
+  std::cout << "func call socket binded" << std::endl;
+
+  zmq::socket_t forward_func_socket(context, ZMQ_PULL);
+  forward_func_socket.bind(ht.forward_func_bind_address());
+  std::cout << "forward func socket binded" << std::endl;  
+  vector<zmq::pollitem_t> pollitems = {
+    {static_cast<void *>(notify_handler_puller), 0, ZMQ_POLLIN, 0},
+    {static_cast<void *>(query_handler_puller), 0, ZMQ_POLLIN, 0},
+    {static_cast<void *>(bucket_op_handler_puller), 0, ZMQ_POLLIN, 0},
+    {static_cast<void *>(trigger_op_handler_puller), 0, ZMQ_POLLIN, 0},
+    {static_cast<void *>(update_handler_puller), 0, ZMQ_POLLIN, 0},
+    {static_cast<void *>(func_create_socket), 0, ZMQ_POLLIN, 0},
+    {static_cast<void *>(app_regist_socket), 0, ZMQ_POLLIN, 0},
+    {static_cast<void *>(func_call_socket), 0, ZMQ_POLLIN, 0},
+    {static_cast<void *>(forward_func_socket), 0, ZMQ_POLLIN, 0},
+  };
+  */
 
   vector<zmq::pollitem_t> pollitems = {
     {static_cast<void *>(notify_handler_puller), 0, ZMQ_POLLIN, 0},
@@ -234,7 +284,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  YAML::Node conf = YAML::LoadFile("conf/config.yml");
+  YAML::Node conf = YAML::LoadFile("conf/config.yml");//这个应该修改
   
   unsigned threads = conf["coord_threads"].as<unsigned>();
   std::cout << "Thread count " << threads << std::endl;

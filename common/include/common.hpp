@@ -36,9 +36,9 @@ inline string get_local_object_name(string bucket, string key, string session) {
 }
 
 struct BucketKey {
-  Bucket bucket_;
-  Key key_;
-  Session session_;
+  Bucket bucket_; //using Bucket = std::string;
+  Key key_; //using Key = std::string;
+  Session session_; //using Session = std::string;
 
   BucketKey(){}
 
@@ -56,13 +56,14 @@ struct BucketKey {
 
   /**
    * return the key name used in shared memory
-   */ 
+   */ //这个函数值得研究,xxshi 
   string shm_key_name() const {
     return get_local_object_name(bucket_, key_, session_);
   }
 
 };
 
+//个函数值得研究,xxshi 
 inline BucketKey get_bucket_key_from_string(string &key_name) {
   auto splitter_index = key_name.find(kDelimiter);
   string bucket = key_name.substr(0, splitter_index);
@@ -106,6 +107,7 @@ inline BucketKey get_bucket_key_from_addr(const BucketKeyAddress &addr) {
   return bucket_key;
 }
 
+//这个函数值得研究,xxshi 
 inline void split(const string& s, char delim, vector<string>& elems) {
   std::stringstream ss(s);
   string item;
@@ -146,6 +148,7 @@ inline unsigned long long generate_timestamp(const unsigned& id) {
 
 // Anna Lattices
 // copy from anna common
+//这个函数值得研究,xxshi 
 inline string serialize(const LWWPairLattice<string>& l) {
   LWWValue lww_value;
   lww_value.set_timestamp(l.reveal().timestamp);

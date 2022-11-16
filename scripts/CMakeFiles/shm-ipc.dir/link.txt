@@ -1,0 +1,2 @@
+/usr/bin/ar qc libshm-ipc.a  CMakeFiles/shm-ipc.dir/common/shm-ipc/src/libipc/platform/shm_linux.cpp.o CMakeFiles/shm-ipc.dir/common/shm-ipc/src/buffer.cpp.o CMakeFiles/shm-ipc.dir/common/shm-ipc/src/ipc.cpp.o CMakeFiles/shm-ipc.dir/common/shm-ipc/src/pool_alloc.cpp.o CMakeFiles/shm-ipc.dir/common/shm-ipc/src/shm.cpp.o CMakeFiles/shm-ipc.dir/common/shm-ipc/src/tls_pointer.cpp.o CMakeFiles/shm-ipc.dir/common/shm-ipc/src/waiter.cpp.o
+/usr/bin/ranlib libshm-ipc.a

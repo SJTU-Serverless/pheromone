@@ -1,0 +1,2 @@
+/usr/bin/ar qc libfaas-proto.a  CMakeFiles/faas-proto.dir/common.pb.cc.o CMakeFiles/faas-proto.dir/kvs.pb.cc.o CMakeFiles/faas-proto.dir/operation.pb.cc.o CMakeFiles/faas-proto.dir/anna.pb.cc.o
+/usr/bin/ranlib libfaas-proto.a

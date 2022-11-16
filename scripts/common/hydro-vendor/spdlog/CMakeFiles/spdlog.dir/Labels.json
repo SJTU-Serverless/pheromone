@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/CMakeFiles/spdlog"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/CMakeFiles/spdlog.rule"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/CMakeFiles/spdlog-complete.rule"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-install.rule"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-mkdir.rule"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-download.rule"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-update.rule"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-patch.rule"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-configure.rule"
+		},
+		{
+			"file" : "/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-build.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"spdlog"
+		],
+		"name" : "spdlog"
+	}
+}

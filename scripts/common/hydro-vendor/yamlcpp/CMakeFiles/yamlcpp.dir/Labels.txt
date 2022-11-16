@@ -1,0 +1,13 @@
+# Target labels
+ yamlcpp
+# Source files and their labels
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/CMakeFiles/yamlcpp
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/CMakeFiles/yamlcpp.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/CMakeFiles/yamlcpp-complete.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/src/yamlcpp-stamp/yamlcpp-install.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/src/yamlcpp-stamp/yamlcpp-mkdir.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/src/yamlcpp-stamp/yamlcpp-download.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/src/yamlcpp-stamp/yamlcpp-update.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/src/yamlcpp-stamp/yamlcpp-patch.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/src/yamlcpp-stamp/yamlcpp-configure.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/yamlcpp/src/yamlcpp-stamp/yamlcpp-build.rule

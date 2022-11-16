@@ -1,0 +1,13 @@
+# Target labels
+ spdlog
+# Source files and their labels
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/CMakeFiles/spdlog
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/CMakeFiles/spdlog.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/CMakeFiles/spdlog-complete.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-install.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-mkdir.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-download.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-update.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-patch.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-configure.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/spdlog/spdlog-prefix/src/spdlog-stamp/spdlog-build.rule

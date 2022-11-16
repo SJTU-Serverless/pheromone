@@ -1,0 +1,13 @@
+# Target labels
+ zeromqcpp
+# Source files and their labels
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/CMakeFiles/zeromqcpp
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/CMakeFiles/zeromqcpp.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/CMakeFiles/zeromqcpp-complete.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/zeromqcpp-prefix/src/zeromqcpp-stamp/zeromqcpp-install.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/zeromqcpp-prefix/src/zeromqcpp-stamp/zeromqcpp-mkdir.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/zeromqcpp-prefix/src/zeromqcpp-stamp/zeromqcpp-download.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/zeromqcpp-prefix/src/zeromqcpp-stamp/zeromqcpp-update.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/zeromqcpp-prefix/src/zeromqcpp-stamp/zeromqcpp-patch.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/zeromqcpp-prefix/src/zeromqcpp-stamp/zeromqcpp-configure.rule
+/data/v-xxshi/pheromone/scripts/common/hydro-vendor/zeromqcpp/zeromqcpp-prefix/src/zeromqcpp-stamp/zeromqcpp-build.rule

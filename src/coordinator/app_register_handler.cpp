@@ -1,5 +1,6 @@
 #include "coord_handlers.hpp"
 
+//这个函数值得研究
 void app_register_handler(logger log, string &serialized, string &private_ip, unsigned &thread_id, SocketCache &pushers,
                         map<Bucket, vector<TriggerPointer>> &bucket_triggers_map,
                         map<string, set<string>> &app_buckets_map,
@@ -20,7 +21,7 @@ void app_register_handler(logger log, string &serialized, string &private_ip, un
 
   for (auto &dependency : appRegist.dependencies()){
     // keep the dependency if it is direct, otherwise create buckets & triggers
-    if (dependency.type() == DependencyType::DIRECT){
+    if (dependency.type() == DependencyType::DIRECT){ //这个有意思
       auto dep = coord_msg.add_dependencies();
       dep->CopyFrom(dependency);
     }

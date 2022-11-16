@@ -48,3 +48,8 @@ examples/cpp/test
 *.exe
 *.out
 *.app
+
+
+build 
+
+scripts/common

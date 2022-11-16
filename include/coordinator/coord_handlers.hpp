@@ -10,7 +10,7 @@
 #include "operation.pb.h"
 
 struct NodeStatus {
-  TimePoint tp_;
+  TimePoint tp_; //这个是什么
   int avail_executors_;
   set<string> functions_;
 
