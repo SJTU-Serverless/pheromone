@@ -49,12 +49,12 @@ bool load_function(logger log, string &func_name, map<string, CppFunction> &name
     log->info("Loaded function {}. lib_load_elasped: {}, func_load_elasped: {}", func_name, lib_load_elasped, func_load_elasped);
     return true;
 }
-
+//更新状态，这个while循环干什么的
 inline void update_status(unsigned thread_id, bool busy_flag){
   string req;
   req.push_back(static_cast<uint8_t>(thread_id + 1)); // we add 1 to avoid \0 in string
   req.push_back(busy_flag ? 6 : 7); // 6 busy ; 7 available
-
+  //
   while (!shared_chan.send(req)) {
       shared_chan.wait_for_recv(1);
   }
@@ -66,11 +66,11 @@ void run(Address ip, unsigned thread_id) {
   auto log = spdlog::basic_logger_mt(log_name, log_file, true);
   log->flush_on(spdlog::level::info);
 
-  UserLibraryInterface *user_lib = new UserLibrary(ip, thread_id);
+  UserLibraryInterface *user_lib = new UserLibrary(ip, thread_id);// 这个值得研究
   map<string, CppFunction> name_func_map;
 
   string chan_name = "ipc-" + std::to_string(thread_id);
-  local_chan = new shm_chan_t{chan_name.c_str(), ipc::receiver};
+  local_chan = new shm_chan_t{chan_name.c_str(), ipc::receiver};//chan_name和local_chan干什么的，local_chan好像是接收者
   
   std::cout << "Running executor...\n";
   log->info("Running executor...");
@@ -79,7 +79,7 @@ void run(Address ip, unsigned thread_id) {
   auto report_end = std::chrono::system_clock::now();
 
   while (true){
-    auto dd = local_chan->recv(RecvWaitTm);
+    auto dd = local_chan->recv(RecvWaitTm);//收到消息，应该是接收到来自local scheduler发送的消息，
     auto str = static_cast<char*>(dd.data());
     
     if (str != nullptr) {
