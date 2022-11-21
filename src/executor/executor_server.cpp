@@ -21,11 +21,19 @@ unsigned ExecutorTimerThreshold = 1000; // every second
 unsigned RecvWaitTm;
 string funcDir;
 
+//这个是load funcition, 那什么时候计算呢, 函数如果有参数怎么办
 bool load_function(logger log, string &func_name, map<string, CppFunction> &name_func_map){
     auto start_t = std::chrono::system_clock::now();
     
     string lib_name = funcDir + func_name + ".so";
-    void *lib_handle = dlopen(lib_name.c_str(), RTLD_LAZY);
+    void *lib_handle = dlopen(lib_name.c_str(), RTLD_LAZY);//dlopen 该函数将打开一个新库，并把它装入内存。该函数主要用来加载库中的符号，这些符号在编译的时候是不知道的。这种机制使得在系统中添加或者删除一个模块时，都不需要重新进行编译。
+//dlsym：在打开的动态库中查找符号的值。
+/*
+dlopen（）需要两个参数：一个文件名和一个标志。文件名就是一个动态库so文件，
+标志指明是否立刻计算库的依赖性。如果设置为 RTLD_NOW 的话，则立刻计算；如果设置的是 RTLD_LAZY，则在需要的时候才计算。
+可以把 dlopen() 返回的句柄作为给 dlsym() 的第一个参数，以获得符号在库中的地址。
+使用这个地址，就可以获得库中特定函数的指针，并且调用装载库中的相应函数。
+*/
     if (!lib_handle) {
         std::cerr << func_name << ".so load failed (" << dlerror() << ")" << std::endl;
         log->error("Load lib {}.so failed", func_name);
@@ -35,7 +43,12 @@ bool load_function(logger log, string &func_name, map<string, CppFunction> &name
     auto lib_load_t = std::chrono::system_clock::now();
  
     char *error = 0;
-    CppFunction func = (CppFunction) dlsym(lib_handle, "handle");
+    CppFunction func = (CppFunction) dlsym(lib_handle, "handle");//这个是什么意思
+    /*
+    dlsym是一个计算机函数，
+    功能是根据动态链接库操作句柄与符号，返回符号对应的地址，不但可以获取函数地址，也可以获取变量地址。 返回符号对应的地址。
+    运行handle函数
+    */
     if ((error = dlerror()) != NULL) {
         std::cerr << "get handle function failed (" << error << ")" << std::endl;
         log->error("Load handle function from {}.so failed: {}", func_name, error);
@@ -102,20 +115,22 @@ void run(Address ip, unsigned thread_id) {
         // int func_id = stoi(func_with_args[1]);
         // std::cout << "Received function call " << func_name << "\n" << std::flush;
 
-        static_cast<UserLibrary*>(user_lib)->set_function_name(func_name);
+        static_cast<UserLibrary*>(user_lib)->set_function_name(func_name);//这几个不知道什么意思
         static_cast<UserLibrary*>(user_lib)->set_session_id(session_id);
         static_cast<UserLibrary*>(user_lib)->set_persist_flag(persist_output_flag);
         if (name_func_map.find(func_name) == name_func_map.end()){
           // read .so from shared memory dir
+          //调用load_funciton,载入func_name这个函数
           if(!load_function(log, func_name, name_func_map)){
             log->error("Fail to execute function {} due to load error", func_name);
-            update_status(thread_id, false);
+            update_status(thread_id, false);//更新状态
             continue;
           }
         }
 
         int arg_size;
         char ** arg_values;
+        //s似乎是获取函数的参数
         if (arg_flag == 0){
           // We parse plain args with splitter
           arg_size = func_with_args.size() - 1;
@@ -179,7 +194,7 @@ void run(Address ip, unsigned thread_id) {
         int exit_signal = 1;
 
         try{
-          exit_signal = name_func_map[func_name](user_lib, arg_size, arg_values);
+          exit_signal = name_func_map[func_name](user_lib, arg_size, arg_values);//这里是运行函数，
         }
         catch (const std::overflow_error& e){
           std::cerr << "Function " << func_name << " throws overflow error " << e.what() << std::endl;

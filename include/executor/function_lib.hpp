@@ -20,6 +20,7 @@ typedef int (*CppFunction)(UserLibraryInterface*, int, char**);
 
 class EpheObjectImpl : public EpheObject {
   public:
+    //构造函数
     EpheObjectImpl(string obj_name, size_t size, bool create) {
       size_ = size;
       obj_name_ = obj_name;
@@ -93,15 +94,15 @@ class UserLibrary : public UserLibraryInterface {
 
   public:
     void set_function_name(string &function){
-      function_ = function;
+      function_ = function;//设置函数名字
     }
 
     void set_session_id(string &session_id){
-      session_id_ = session_id;
+      session_id_ = session_id;//设置session_id 
     }
 
     void set_persist_flag(uint8_t &persist_flag){
-      persist_flag_ = persist_flag;
+      persist_flag_ = persist_flag;//这个应该是表示数据persist还是不persist 
     }
     
     void clear_session(){
@@ -121,16 +122,17 @@ class UserLibrary : public UserLibraryInterface {
     }
 
     EpheObject* create_object(string bucket, string key, size_t size = 1024 * 1024) {
-      return new EpheObjectImpl(bucket, key, session_id_, size, true);
+      return new EpheObjectImpl(bucket, key, session_id_, size, true);//生成一个Epheobject 
     }
 
     EpheObject* create_object(size_t size = 1024 * 1024) {
       string key = std::to_string(chan_id_) + "_" + std::to_string(get_object_id());
-      return create_object(bucketNameDirectInvoc, key, size);
+      return create_object(bucketNameDirectInvoc, key, size);//生成Epheobject
     }
 
     EpheObject* create_object(string target_function, bool many_to_one_trigger = true, size_t size = 1024 * 1024) {
       if (many_to_one_trigger) {
+        //按论文的说法，many_to_one_trigger是到了一定的数量，才会trigger
         return new EpheObjectImpl(function_, target_function, session_id_, size);
       }
       else {
@@ -161,12 +163,14 @@ class UserLibrary : public UserLibraryInterface {
       }
       
       req.push_back(req_id);
-      bool data_packing = data->get_size() <= msgDataPackingThreshold;
+      bool data_packing = data->get_size() <= msgDataPackingThreshold;// // pack data into notification msg if data size < 1KB 
+      //这里的data_packing值得学习
       req.push_back(data_packing ? 1 : 2);
       req += session_id_ + "|";
       req += function_ + "|" + static_cast<EpheObjectImpl*>(data)->target_func_ + "|"
                         + static_cast<EpheObjectImpl*>(data)->obj_name_ + "|";
-
+      //static_cast<EpheObjectImpl*>(data)->target_func_表示什么函数需要这个data,直接给
+      //if data_packing 为true, 就把数据包装到req中，否则只需要这个数据的大小
       if (data_packing) {
         req += string(static_cast<char*>(data->get_value()), data->get_size());
       }
@@ -177,7 +181,10 @@ class UserLibrary : public UserLibraryInterface {
       //     shared_chan.wait_for_recv(1);
       // }
       
-      bool send_res = shared_chan.send(req);
+      bool send_res = shared_chan.send(req);//将req发送出去
+      //shm_chan_t shared_chan { kvs_name__, ipc::sender };
+      //得研究下这个ipc的用法，再看看论文，ipc是干什么收到，这个req发给谁
+      //另外,理解这个req的构成
       if (!send_res) {
         std::cerr << "Send to executer failed.";
 
@@ -207,8 +214,9 @@ class UserLibrary : public UserLibraryInterface {
     }
 
     EpheObject* get_object(string bucket, string key, bool from_ephe_store=true) {
-      string obj_name = get_local_object_name(bucket, key, session_id_);
+      string obj_name = get_local_object_name(bucket, key, session_id_);//得到这个Object的那么
       if (!from_ephe_store) {
+        //from_ephe_store为true,应该是直接从内存取数据
         obj_name = kvsKeyPrefix + kDelimiter + key;
       }
       string req;
@@ -219,7 +227,7 @@ class UserLibrary : public UserLibraryInterface {
       req.push_back(req_id);
       req.push_back(static_cast<uint8_t>(obj_name.size()));
       req += obj_name;
-
+      //发送方数据，这个req发送给谁？
       while (!shared_chan.send(req)) {
           shared_chan.wait_for_recv(1);
       }
