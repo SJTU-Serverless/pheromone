@@ -69,7 +69,7 @@ void run(Address ip) {
 
     // coord sync 
     if (pollitems[0].revents & ZMQ_POLLIN) {
-      string serialized = kZmqUtil->recv_string(&coord_sync_socket);
+      string serialized = kZmqUtil->recv_string(&coord_sync_socket);//从global scheduler收到的消息？这个消息是啥？
       CoordSync msg;
       msg.ParseFromString(serialized);
       CoordIp coord_ip(msg.public_ip(), msg.private_ip(), msg.thread_id());

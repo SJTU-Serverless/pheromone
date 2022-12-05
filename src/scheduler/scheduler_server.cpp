@@ -84,9 +84,11 @@ inline void release_shm_object() {
   // TODO clear the shared memory
 }
 
+//这个函数干什么用的
 void forward_call_via_helper(CommHelperInterface *helper, string &session_id, string &app_name, vector<string> &func_name_vec, 
                             vector<vector<string>> &func_args_vec, int arg_flag){
   // send request to global coordinator
+  //这里的arg_flag表示什么
   if (arg_flag > 0){
     int total_data_size = 0;
     for (auto &func_args : func_args_vec){
@@ -101,8 +103,8 @@ void forward_call_via_helper(CommHelperInterface *helper, string &session_id, st
         for (int i = 0; i < func_args.size(); i+=3){
           string key_name = func_args[i] + kDelimiter + func_args[i + 1];
           auto size_len = key_len_map[key_name];
-          auto shm_id = ipc::shm::acquire(key_name.c_str(), size_len, ipc::shm::open);
-          auto shm_ptr = static_cast<char*>(ipc::shm::get_mem(shm_id, nullptr));
+          auto shm_id = ipc::shm::acquire(key_name.c_str(), size_len, ipc::shm::open);//这个很重要
+          auto shm_ptr = static_cast<char*>(ipc::shm::get_mem(shm_id, nullptr));//这也是
           string real_data(shm_ptr, size_len);
           if (arg_flag == 1) {
             real_data_args.push_back(real_data);
@@ -126,6 +128,7 @@ void forward_call_via_helper(CommHelperInterface *helper, string &session_id, st
   }
 }
 
+//这个函数干什么用的
 void schedule_func_call(logger log, CommHelperInterface *helper, map<uint8_t, uint8_t> &executor_status_map, map<string, set<uint8_t>> &function_executor_map,
                         string &session_id, string &app_name, string &func_name, vector<string> &func_args, int arg_flag){
   vector<uint8_t> avail_warm_executors;
@@ -266,7 +269,7 @@ void run(CommHelperInterface *helper, Address ip, unsigned thread_id, unsigned e
   map<uint8_t, uint8_t> executor_status_map;
   for (uint8_t e_id = 0; e_id < executor; e_id++){
     // 0: empty, 1: available, 2: await, 3: busy, 4: error
-    executor_status_map[e_id] = 2;//等待
+    executor_status_map[e_id] = 2;//等待,等待什么
     
     string chan_name = "ipc-" + std::to_string(e_id);//这个很重要
     shm_chan_t * executor_chan_ = new shm_chan_t{chan_name.c_str(), ipc::sender};//using shm_chan_t = ipc::chan<ipc::relat::multi, ipc::relat::multi, ipc::trans::unicast>;
@@ -288,7 +291,7 @@ void run(CommHelperInterface *helper, Address ip, unsigned thread_id, unsigned e
 
   while (true){
     // TODO timeout
-    auto dd = shared_chan.recv(0);//TODO: 这个收到了什么shared_chan是接收者
+    auto dd = shared_chan.recv(0);//TODO: 这个收到了什么(shared_chan是接收者),谁给它发消息
     auto str = static_cast<char*>(dd.data());//转为数据 
 
     if (str != nullptr) {
